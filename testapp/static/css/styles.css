@@ -1,0 +1,23 @@
+body {
+/*    max-width: 800px;
+    margin: 0 auto;*/
+    background: #eee;
+}
+
+header {
+    margin: 50px auto;
+}
+
+.header-title {
+    text-align: center;
+}
+
+
+.container {
+    margin-bottom: 50px;
+}
+
+#container {
+    min-width: 310px;
+    height: 400px;
+}
