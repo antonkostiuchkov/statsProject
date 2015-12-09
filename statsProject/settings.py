@@ -60,7 +60,7 @@ WSGI_APPLICATION = 'statsProject.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'testDb',
+        'NAME': 'VMXLogDb',
         'USER': 'postgres',
         'PASSWORD': 'postgresql',
         'HOST': 'localhost',
