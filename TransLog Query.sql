@@ -238,8 +238,8 @@ ORDER BY
 SELECT
     date_trunc('day', TL.timestamp)::date AS date_aggr,
     TL.user_name,
-    TLAC.lac_name,
-    DN.name,
+    TLAC.lac_name AS operation_name,
+    DN.name AS device_name,
     TL.exec_time
 FROM
     trans_log AS TL

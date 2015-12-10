@@ -19,24 +19,59 @@
     <header class="container">
         <div class="row">
             <h1 class="header-title">Stats ASF-1158</h1>
+            <a href="#" class="btn btn-default btn-block load">Load Graphs</a>
         </div>
     </header>
 
+
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div id="container-5"></div>
+                <div id="container-1"></div>
+                <div class="loader">
+                    <div class="content">
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <h1 class="loader-text">Loading...</h1>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
-                <div id="container-1"></div>
-            </div>
             <div class="col-md-6">
                 <div id="container-2"></div>
+                <div class="loader">
+                    <div class="content">
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <h1 class="loader-text">Loading...</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="container-3"></div>
+                <div class="loader">
+                    <div class="content">
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <h1 class="loader-text">Loading...</h1>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -44,7 +79,18 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div id="container-6"></div>
+                <div id="container-4"></div>
+                <div class="loader">
+                    <div class="content">
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <h1 class="loader-text">Loading...</h1>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -52,15 +98,54 @@
     <div class="container">
         <div class="row">
             <div class="col-md-6">
-                <div id="container-3"></div>
+                <div id="container-5"></div>
+                <div class="loader">
+                    <div class="content">
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <h1 class="loader-text">Loading...</h1>
+                    </div>
+                </div>
             </div>
             <div class="col-md-6">
-                <div id="container-4"></div>
+                <div id="container-6"></div>
+                <div class="loader">
+                    <div class="content">
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <h1 class="loader-text">Loading...</h1>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
-
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="container-7"></div>
+                <div class="loader">
+                    <div class="content">
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <div class="stick"></div>
+                        <h1 class="loader-text">Loading...</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- JS -->
     <script src="{% static 'js/vendor/jquery-1.11.3.min.js' %}"></script>
@@ -68,8 +153,13 @@
     <!-- Highcharts -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="{% static 'js/vendor/dark-theme.js' %}"></script>
     <!-- Bootstrap -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <!-- taffy.js -->
+    <script src="{% static 'js/vendor/taffy-min.js' %}"></script>
+    <script src="{% static 'js/vendor/taffy.extend.js' %}"></script>
+
 
 </body>
 </html>
