@@ -4,38 +4,31 @@
  */
 
 // Load the fonts
-Highcharts.createElement('link', {
-   href: '//fonts.googleapis.com/css?family=Unica+One',
-   rel: 'stylesheet',
-   type: 'text/css'
-}, null, document.getElementsByTagName('head')[0]);
+// Highcharts.createElement('link', {
+//    href: '//fonts.googleapis.com/css?family=Unica+One',
+//    rel: 'stylesheet',
+//    type: 'text/css'
+// }, null, document.getElementsByTagName('head')[0]);
 
 Highcharts.theme = {
    colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
       "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
    chart: {
-      backgroundColor: {
-         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-         stops: [
-            [0, '#2a2a2b'],
-            [1, '#3e3e40']
-         ]
-      },
-      style: {
-         fontFamily: "'Unica One', sans-serif"
-      },
-      plotBorderColor: '#606063'
+      backgroundColor: '#1f1f1f',
+      plotBorderColor: '#606063',
+      borderWidth: 1,
+      borderColor: '#262626'
    },
    title: {
       style: {
-         color: '#E0E0E3',
+         color: '#bbbfc2',
          textTransform: 'uppercase',
          fontSize: '20px'
       }
    },
    subtitle: {
       style: {
-         color: '#E0E0E3',
+         color: '#bbbfc2',
          textTransform: 'uppercase'
       }
    },
@@ -43,7 +36,7 @@ Highcharts.theme = {
       gridLineColor: '#707073',
       labels: {
          style: {
-            color: '#E0E0E3'
+            color: '#bbbfc2'
          }
       },
       lineColor: '#707073',
@@ -51,7 +44,7 @@ Highcharts.theme = {
       tickColor: '#707073',
       title: {
          style: {
-            color: '#A0A0A3'
+            color: '#bbbfc2'
 
          }
       }
@@ -60,7 +53,7 @@ Highcharts.theme = {
       gridLineColor: '#707073',
       labels: {
          style: {
-            color: '#E0E0E3'
+            color: '#bbbfc2'
          }
       },
       lineColor: '#707073',
@@ -69,7 +62,7 @@ Highcharts.theme = {
       tickWidth: 1,
       title: {
          style: {
-            color: '#A0A0A3'
+            color: '#bbbfc2'
          }
       }
    },

@@ -9,17 +9,17 @@ $(function() {
     // year
 
     var options = {
-        interval: "hour",
-        limit: "1"
+        interval: 'hour',
+        limit: '5'
     };
 
     var url = '/query/' + options.interval + '/' + options.limit + '/';
 
     var chartTypes = {
-        bar: "bar",
-        column: "column",
-        line: "line",
-        spline: "spline"
+        bar: 'bar',
+        column: 'column',
+        line: 'line',
+        spline: 'spline'
     };
 
     $('a.load').on('click', function() {
@@ -37,24 +37,25 @@ $(function() {
 
 
                 // Actions per user
-                var userGroup = masterData().group("user_name");
+                var userGroup = masterData().group('user_name');
                 var userGroupData = TAFFY(userGroup);
                 var userName = userGroupData().map(function (group) {
                     return group.group[0];
                 });
-                var userActions = userGroupData().select("count");
+                var userActions = userGroupData().select('count');
 
 
-                // GENERAL SYSTEM SPEED for the last 7 days
-                var dateGroup = masterData().group("date_aggr");
+                // GENERAL SYSTEM SPEED
+                var dateGroup = masterData().group('date_aggr');
                 var dateGroupData = TAFFY(dateGroup);
                 var date = dateGroupData().map(function (group) {
                     return group.group[0];
                 }).reverse();
+                console.log(date);
 
                 var execTimeAvg = dateGroupData().map(function (r) {
                     var execTimeData = TAFFY(r.result);
-                    var execTimeRaw = execTimeData().avg("exec_time");
+                    var execTimeRaw = execTimeData().avg('exec_time');
                     var execTimeRound = Number((execTimeRaw).toFixed(2));
                     return execTimeRound
 
@@ -63,14 +64,11 @@ $(function() {
 
 
                 // Areachart
-                var allDates = masterData().select("date_aggr");
-                console.log(masterData().distinct("date_aggr"));
 
-
-                highCharts (userName, userActions, chartTypes.column, "container-1");
-                highCharts (date, execTimeAvg, chartTypes.bar, "container-2");
-                highCharts (userName, userActions, chartTypes.bar, "container-3");
-                lineChart (date, execTimeAvg, "container-4");
+                highCharts (userName, userActions, chartTypes.column, 'container-1');
+                highCharts (date, execTimeAvg, chartTypes.bar, 'container-2');
+                highCharts (userName, userActions, chartTypes.bar, 'container-3');
+                lineChart (date, execTimeAvg, 'container-4');
 
 
 
@@ -93,7 +91,8 @@ $(function() {
 function highCharts (x, y, chartType, placeId) {
     $('#' + placeId + '').highcharts({
         chart: {
-            type: chartType
+            type: chartType,
+            zoomType: 'x'
         },
         title: {
             text: 'Actions per user'
@@ -152,7 +151,8 @@ function highCharts (x, y, chartType, placeId) {
 function lineChart (x, y, placeId) {
     $('#' + placeId + '').highcharts({
         chart: {
-            type: "spline"
+            type: 'spline',
+            zoomType: 'x'
         },
         title: {
             text: 'Monthly Average Temperature',
@@ -185,72 +185,9 @@ function lineChart (x, y, placeId) {
             borderWidth: 0
         },
         series: [{
+            type: 'area',
             name: 'Actions',
             data: y
-        }]
-    });
-};
-
-function arearangeChart (x, y) {
-    $('#container-7').highcharts({
-        chart: {
-            type: 'arearange',
-            zoomType: 'x'
-        },
-        title: {
-            text: 'My Title'
-        },
-        subtitle: {
-            text: 'My Subtitle'
-        },
-        xAxis: {
-            categories: ['x', 'y'],
-            title: {
-                text: null
-            }
-        },
-        yAxis: {
-            // min: 0,
-            // max: 600,
-            title: {
-                text: 'yAxis Title',
-                align: 'high'
-            },
-            labels: {
-                overflow: 'justify'
-            }
-        },
-        tooltip: {
-            // crosshairs: true,
-            // shared: true,
-            valueSuffix: ' actions'
-        },
-        plotOptions: {
-            bar: {
-                dataLabels: {
-                    enabled: true
-                }
-            }
-        },
-        legend: {
-            // enabled: false,
-
-            layout: 'vertical',
-            align: 'right',
-            verticalAlign: 'top',
-            x: -40,
-            y: 80,
-            floating: true,
-            borderWidth: 1,
-            backgroundColor: ((Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'),
-            shadow: true
-        },
-        credits: {
-            enabled: false
-        },
-        series: [{
-            name: 'Name of series',
-            data: data
         }]
     });
 };
