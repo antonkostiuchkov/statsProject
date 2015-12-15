@@ -1,22 +1,31 @@
 -- Transaction Log
+-- JOININNG ALL Data in One table
 
 SELECT
-    timestamp, client_ip, user_name, lac_name, name, exec_time
+    date_trunc('hour', TL.timestamp) AS date_aggr,
+    TL.user_name,
+    TLAC.lac_name AS operation_name,
+    DN.name AS device_name,
+    TL.exec_time
 FROM
-    trans_log as TL,
-    trans_log_action_codes as TLAC,
-    device_names as DN
+    trans_log AS TL
+    INNER JOIN trans_log_action_codes AS TLAC
+        ON TL.action_code = TLAC.lac_id
+    LEFT OUTER JOIN device_names AS DN
+        ON TL.primary_device = DN.id
+
 
 WHERE
-    timestamp > CURRENT_DATE - INTERVAL '7' day
+    timestamp > CURRENT_DATE - INTERVAL '3' day
     AND
         user_name != ''
     AND
-        TL.action_code = TLAC.lac_id
+        user_name != 'road'
     AND
-        TL.primary_device = DN.id
+        user_name != 'root'
 ORDER BY
-    timestamp desc
+    date_aggr desc
+
 
 
 
@@ -230,28 +239,73 @@ ORDER BY
 
 
 
-
-
-
--- JOININNG ALL Data in One table
+-- All operations for the last 2 days
 
 SELECT
-    date_trunc('day', TL.timestamp)::date AS date_aggr,
-    TL.user_name,
-    TLAC.lac_name AS operation_name,
-    DN.name AS device_name,
-    TL.exec_time
+    TL.timestamp AS date_aggr,
+    TLAC.lac_name AS operation_name
+
 FROM
     trans_log AS TL
     INNER JOIN trans_log_action_codes AS TLAC
         ON TL.action_code = TLAC.lac_id
-    LEFT OUTER JOIN device_names AS DN
-        ON TL.primary_device = DN.id
-
 
 WHERE
-    timestamp > CURRENT_DATE - INTERVAL '7' day
+    timestamp > CURRENT_DATE - INTERVAL '2' day
     AND
         user_name != ''
+--GROUP BY
+--  date_aggr
+ORDER BY
+    date_aggr desc
+
+
+
+
+
+-- Amount of all operations per minute
+SELECT
+    date_trunc('minute', TL.timestamp) AS date_aggr,
+    COUNT(TLAC.lac_name) AS operations
+
+FROM
+    trans_log AS TL
+    INNER JOIN trans_log_action_codes AS TLAC
+        ON TL.action_code = TLAC.lac_id
+
+WHERE
+    timestamp > CURRENT_DATE - INTERVAL '2' day
+    AND
+        user_name != ''
+GROUP BY
+    date_aggr
+ORDER BY
+    date_aggr desc
+
+
+
+
+-- Amount of User authorizations for the last 3 days per hour
+SELECT
+    date_trunc('hour', TL.timestamp) AS date_aggr,
+    COUNT(TLAC.lac_name) AS operations
+
+FROM
+    trans_log AS TL
+    INNER JOIN trans_log_action_codes AS TLAC
+        ON TL.action_code = TLAC.lac_id
+
+WHERE
+    timestamp > CURRENT_DATE - INTERVAL '3' day
+    AND
+        user_name != ''
+    AND
+        user_name != 'road'
+    AND
+        user_name != 'root'
+    AND
+        TLAC.lac_name = 'User authorization'
+GROUP BY
+    date_aggr
 ORDER BY
     date_aggr desc

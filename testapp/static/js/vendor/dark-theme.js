@@ -14,10 +14,14 @@ Highcharts.theme = {
    colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
       "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
    chart: {
+      spacingTop: 20,
       backgroundColor: '#1f1f1f',
       plotBorderColor: '#606063',
       borderWidth: 1,
-      borderColor: '#262626'
+      borderColor: '#262626',
+      style: {
+         fontFamily: 'Helvetica Neue, Helvetica, Arial, sans-serif'
+     }
    },
    title: {
       style: {
@@ -33,7 +37,8 @@ Highcharts.theme = {
       }
    },
    xAxis: {
-      gridLineColor: '#707073',
+      gridLineWidth: 1,
+      gridLineColor: '#343436',
       labels: {
          style: {
             color: '#bbbfc2'
@@ -50,7 +55,7 @@ Highcharts.theme = {
       }
    },
    yAxis: {
-      gridLineColor: '#707073',
+      gridLineColor: '#343436',
       labels: {
          style: {
             color: '#bbbfc2'

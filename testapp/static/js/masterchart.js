@@ -81,5 +81,21 @@ options.series.push({
 
 
 
-// GLOBAL OPTIONS
+// The data from the external JSON file should be loaded into the chart options before the chart is created. This is a best practice suggestion, since creating the chart and then loading the data into it requires means drawing the chart twice.
 
+$(document).ready(function() {
+
+    var options = {
+        chart: {
+            renderTo: 'container',
+            type: 'spline'
+        },
+        series: [{}]
+    };
+
+    $.getJSON('data.json', function(data) {
+        options.series[0].data = data;
+        var chart = new Highcharts.Chart(options);
+    });
+
+});
