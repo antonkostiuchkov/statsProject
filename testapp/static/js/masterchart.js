@@ -99,3 +99,19 @@ $(document).ready(function() {
     });
 
 });
+
+
+// JS for other charts
+
+// Actions per user
+// var userGroup = masterTable().group('user_name');
+// var userGroupTable = TAFFY(userGroup);
+// var userName = userGroupTable().map(function (group) {
+//     return group.group[0];
+// });
+// var userActions = userGroupTable().select('count');
+
+
+// Build HighCharts by passing chartOptions object
+
+// Optionally var chart = new Highcharts.Chart(chartOptions);

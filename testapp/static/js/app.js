@@ -1,52 +1,55 @@
 $(function() {
 
-
-
+    // Defining sorting options
     var queryOptions = {
         interval: 'hour',
-        limit: '13'
-        // minute
-        // hour
-        // day
-        // week
-        // month
-        // quarter
-        // year
+        limit: '14'
     };
 
-    var url = '/query/' + queryOptions.interval + '/' + queryOptions.limit + '/';
-
-
     $('a.load').on('click', function() {
+
+        // Grabbing vals from select and input
+        var timeSpan = $( '#time-span' ).val();
+        var lastDays = $( '#last-days' ).val();
+        queryOptions.interval = timeSpan;
+        queryOptions.limit = lastDays;
+
+        var url = '/query/' + queryOptions.interval + '/' + queryOptions.limit + '/';
+
+        // AJAX request data
         $.ajax({
             url: url,
             type: 'GET',
             dataType: 'JSON',
             beforeSend: function () {
+                appendLoader ();
                 $('.loader').show();
             },
             success: function (data, jqXHR) {
 
-                // SQL query
-                var masterData = TAFFY(data);
+                // Grouping ajax result into a table
+                var masterTable = TAFFY(data);
 
+                // GROUP BY time
+                var dateGroup = masterTable().group('date_aggr');
+                var dateGroupTable = TAFFY(dateGroup);
+
+                // Defining arrays that are going to be fed to highcharts
                 var auths = [];
                 var conns = [];
                 var disconns = [];
                 var exec = [];
                 var execTimeAvg = [];
 
-                // GROUP BY time
-                var dateGroup = masterData().group('date_aggr');
-                var dateGroupData = TAFFY(dateGroup);
 
-                var chartData = dateGroupData().map(function (group) {
+                // Iterate through each object in an array and return array
+                dateGroupTable().map(function (object) {
 
                     // Parse date string into UNIX timestamp and add 1 hour
-                    var unix = Date.parse(group.group[0]) + 3600000;
+                    var unix = Date.parse(object.group[0]) + 3600000;
 
                     // An array of objects(results) for each day
-                    var result = TAFFY(group.result);
+                    var result = TAFFY(object.result);
 
                     // Number of authorizations
                     var authCount = result({operation_name:'User authorization'}).count();
@@ -58,22 +61,9 @@ $(function() {
                     var disconn = result({operation_name:'Disconnection'}).count()*-1;
 
 
-                    // Max / Min exec_time
-
-                    // var exTime = result().select('exec_time');
-                    // Excluding 0
-                    // $.each(exTime, function (i, x) {
-                    //     var index = $.inArray(0, exTime);
-                    //     if (index !== -1) {
-                    //         exTime.splice(index, 1)
-                    //     };
-                    // });
-
                     // Grabbing max value in the column 'exec-time'
                     var exTimeMax = result().max('exec_time');
 
-                    // Min results in 0 or when excluding 0 - 1,4 and so on. In practice this is represented badly on the graph.
-                    // var exTimeMin = Math.min.apply(null, exTime);
 
                     // Filtering result table to show info for matching exTimeMax from column 'exec_time'
                     var filter = result().filter({'exec_time':exTimeMax});
@@ -91,8 +81,6 @@ $(function() {
                     var execTimeRound = Number((execTimeRaw).toFixed(2));
 
 
-
-
                     // Update data for the charts
                     auths.push([unix, authCount]);
                     conns.push([unix, conn]);
@@ -102,43 +90,119 @@ $(function() {
 
                 });
 
+
+                // GROUP BY operation_name
+                var operationGroup = masterTable().group('operation_name');
+                var operationGroupTable = TAFFY(operationGroup);
+
+                var seriesDrill = [];
+                var drillDrill = [];
+
+
+                operationGroupTable().map(function (object) {
+
+                    var result = TAFFY(object.result);
+
+                    // Name of each operation
+                    var operationName = object.group[0];
+
+                    // Average Execution Time for each operation
+                    var execTimeRaw = result().avg('exec_time');
+                    var execTime = Number((execTimeRaw).toFixed(2));
+
+                    var deviceGroup = result().group('device_name');
+                    var deviceGroupTable = TAFFY(deviceGroup);
+
+                    var execTimeAvgPerDevice = deviceGroupTable().map(function (object) {
+                        var result = TAFFY(object.result);
+                        var execTimeRaw = result().avg('exec_time');
+                        var execTime = Number((execTimeRaw).toFixed(2));
+                        var deviceName = object.group[0]
+                        var result = [deviceName, execTime]
+                        return result;
+                    });
+
+                    seriesDrill.push({
+                        'name' : operationName,
+                        'y' : execTime,
+                        'drilldown' : operationName
+                    });
+
+                    drillDrill.push({
+                        'id' : operationName,
+                        'data' : execTimeAvgPerDevice
+                    });
+                });
+
+                // Reversing arrays for x axis
                 auths.reverse();
                 conns.reverse();
                 disconns.reverse();
                 exec.reverse();
                 execTimeAvg.reverse();
 
-
-
-                // Actions per user
-                // var userGroup = masterData().group('user_name');
-                // var userGroupData = TAFFY(userGroup);
-                // var userName = userGroupData().map(function (group) {
-                //     return group.group[0];
-                // });
-                // var userActions = userGroupData().select('count');
+                // Sorting array from highest to lowest vals
+                var seriesDrillSort = seriesDrill.sort(sortDesc);
+                // Limiting to top 10 results
+                var seriesDrillLimit = seriesDrillSort.slice(0,10)
 
 
                 // Initializing charts
-                // var chart = new Highcharts.Chart(chartOptions);
-
-                highChartsAuth(auths, 'spline', 'container-1');
-                highChartsConn(conns, disconns, 'column', 'container-4');
-                highChartsExecTime(exec, execTimeAvg, 'container-7');
+                highChartsAuth (auths, 'spline', 'container-1');
+                highChartsConn (conns, disconns, 'column', 'container-4');
+                highChartsExecTime (exec, execTimeAvg, 'container-7');
+                highChartsDrill (seriesDrillLimit, drillDrill, 'container-8');
 
                 // Hide loading animation
                 $('.loader').hide();
+
+
+            // End of success function
             },
             error: function () {
-                alert('Service error');
+                alert('Service error. Check if you\'ve entered the amount of days');
             }
+
+        // End of Ajax
         });
+
+    // End of onclick function
     });
 
 
-// End of document.ready funtion
+
+    labelFix ();
+
+// End of document.ready function
 });
 
+
+
+
+
+// Appending loading animation
+function appendLoader () {
+    $('div[id^="container-"]').append('<div class="loader"><div class="content"><div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div><div class="stick"></div><h1 class="loader-text">Loading...</h1></div></div>');
+};
+
+
+// Sort seriesDrill array by 'y' descending
+function sortDesc (a,b) {
+    return b.y - a.y;
+};
+
+
+// Label fix
+function labelFix () {
+    $('.input-group input').focusout(function(){
+        var text_val = $(this).val();
+        if(text_val === "") {
+            $(this).removeClass('has-value');
+        } else {
+            $(this).addClass('has-value');
+        }
+    });
+};
 
 
 // Charts
@@ -346,3 +410,46 @@ function highChartsExecTime (data, execTimeAvg, placeId) {
         }]
     });
 };
+
+function highChartsDrill (seriesData, drillData, placeId) {
+    $('#' + placeId + '').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'TOP 5 Operations\' Max Execution Time and its Breakdown by Devices'
+        },
+        xAxis: {
+            type: 'category'
+        },
+        yAxis: {
+            title: {
+                text: 'Average Execution Time'
+            }
+        },
+        legend: {
+            enabled: false
+        },
+
+        plotOptions: {
+            series: {
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.y} ms'
+                }
+            }
+        },
+
+        series: [{
+            name: 'Operations',
+            colorByPoint: true,
+            data: seriesData
+        }],
+        drilldown: {
+            series: drillData
+        }
+    });
+};
+
+
+

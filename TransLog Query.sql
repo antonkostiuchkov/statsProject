@@ -29,6 +29,11 @@ ORDER BY
 
 
 
+TLAC.lac_name = 'User authorization'
+exec_time = 0
+
+
+
 -- Grouping
 
 -- All actions per user
@@ -309,3 +314,31 @@ GROUP BY
     date_aggr
 ORDER BY
     date_aggr desc
+
+
+
+
+-- Drilldown
+
+SELECT
+    DN.name AS device_name,
+    TLAC.lac_name AS operation_name,
+    AVG(exec_time) as avg_exec_time
+FROM
+    trans_log AS TL
+    INNER JOIN trans_log_action_codes AS TLAC
+        ON TL.action_code = TLAC.lac_id
+    LEFT OUTER JOIN device_names AS DN
+        ON TL.primary_device = DN.id
+
+WHERE
+    timestamp > CURRENT_DATE - INTERVAL '6' day
+AND
+    DN.name != ''
+
+GROUP BY
+    device_name,
+    operation_name
+ORDER BY
+    device_name,
+    avg_exec_time desc

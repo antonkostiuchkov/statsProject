@@ -39,6 +39,8 @@ def query(request, interval, limit):
                 user_name != 'road'
             AND
                 user_name != 'root'
+            AND
+                DN.name != ''
         ORDER BY
             date_aggr desc
 
