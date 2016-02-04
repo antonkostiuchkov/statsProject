@@ -56,6 +56,11 @@ WSGI_APPLICATION = 'statsProject.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+POSTGRESQL_HOST = '192.168.8.180'
+POSTGRESQL_PORT = '5432'
+POSTGRESQL_LOGIN = 'VMXApp'
+POSTGRESQL_PASS = 'blue+invisible+crocodile'
+
 
 DATABASES = {
     'default': {
@@ -65,6 +70,30 @@ DATABASES = {
         'PASSWORD': 'postgresql',
         'HOST': 'localhost',
         'PORT': '5432',
+    },
+    'VMXConfig': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'VMXConfigDb', # Or path to database file if using sqlite3.
+        'USER': POSTGRESQL_LOGIN,                      # Not used with sqlite3.
+        'PASSWORD': POSTGRESQL_PASS,            # Not used with sqlite3.
+        'HOST': POSTGRESQL_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': POSTGRESQL_PORT,                      # Set to empty string for default. Not used with sqlite3.
+    },
+    'VMXLogs': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'VMXLogDb', # Or path to database file if using sqlite3.
+        'USER': POSTGRESQL_LOGIN,                      # Not used with sqlite3.
+        'PASSWORD': POSTGRESQL_PASS,            # Not used with sqlite3.
+        'HOST': POSTGRESQL_HOST,                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': POSTGRESQL_PORT,                      # Set to empty string for default. Not used with sqlite3.
+    },
+    'VMXMetrics': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'VMXMetricsDb', # Or path to database file if using sqlite3.
+        'USER': POSTGRESQL_LOGIN,                      # Not used with sqlite3.
+        'PASSWORD': POSTGRESQL_PASS,            # Not used with sqlite3.
+        'HOST': '192.168.18.114',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '5434',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 

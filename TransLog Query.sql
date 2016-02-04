@@ -342,3 +342,114 @@ GROUP BY
 ORDER BY
     device_name,
     avg_exec_time desc
+
+-- Metrics DB
+
+{
+    'data': [
+        {
+            'date': '2016-02-01',
+            'devices_online': 13,
+            'devices_offline': 10
+        },
+        {
+            'date': '2016-02-02',
+            'devices_online': 15,
+            'devices_offline': 11
+        }
+    ],
+    'axis': {
+        'valueAxis': [
+            {
+                'field': 'devices_online',
+                'title': 'Devices Online'
+            },
+            {
+                'field': 'devices_offline',
+                'title': 'Devices Offline'
+            }
+        ],
+        'categoryAxis': {
+            'field': 'date'
+        }
+    }
+}
+
+
+
+SELECT
+    date_trunc('day', mt_startdate) as date
+    ,source_id
+    ,device_id
+    ,online
+FROM
+    t_online
+LIMIT 100
+WHERE
+        date_trunc('day', mt_startdate) >= '2016-01-02'
+    AND
+        date_trunc('day', mt_startdate) <= '2016-02-02'
+ORDER BY
+    date desc
+
+
+
+
+
+SELECT
+    online
+FROM
+    t_online
+LIMIT 100
+WHERE
+        date_trunc('day', mt_startdate) >= '2016-01-02'
+    AND
+        date_trunc('day', mt_startdate) <= '2016-02-02'
+    AND
+        online = 0
+
+
+
+
+SELECT
+    date_trunc('minute', mt_startdate) as date
+    ,COUNT(CASE WHEN online = 1 THEN 1 END) AS offline
+    ,COUNT(CASE WHEN online = 0 THEN 1 END) AS online
+FROM
+    t_online
+WHERE
+        mt_startdate >= '2016-02-02 10:10:00'
+    AND
+        mt_startdate >= '2016-02-02 14:10:00'
+GROUP BY
+    date
+ORDER BY
+    date
+
+
+SELECT
+    date_trunc('minute', mt_startdate) as date
+    ,COUNT(CASE WHEN online = 1 THEN 1 END) AS offline
+    ,COUNT(CASE WHEN online = 0 THEN 1 END) AS online
+FROM
+    t_online
+WHERE
+        mt_startdate >= '2016-02-02 10:10:00'
+    AND
+        mt_startdate <= '2016-02-02 14:10:00'
+GROUP BY
+    date
+ORDER BY
+    date desc
+
+
+
+-- SELECT
+--     ,COUNT(CASE WHEN online = 1 THEN 1 END) AS offline
+--     ,COUNT(CASE WHEN online = 0 THEN 1 END) AS online
+-- FROM
+--     t_online
+-- WHERE
+--         mt_startdate >= '2016-02-02 10:10:00'
+--     AND
+--         mt_startdate <= '2016-02-02 14:10:00'

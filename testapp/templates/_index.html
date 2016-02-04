@@ -1,0 +1,455 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html lang="en" ng-app="Stats">
+<head>
+    <meta charset="UTF-8">
+    <title>ASF-1158</title>
+
+    <!-- Normalize -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <!-- CSS -->
+    <link rel="stylesheet" href="{% static 'css/stats/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/stats/datepicker.css' %}">
+    <link  rel="stylesheet" href="{% static 'js/stats/vendor/amcharts/plugins/export/export.css' %}">
+
+</head>
+<body ng-controller="homeCtrl">
+
+    <div class="container">
+
+        <header class="row">
+            <h3 class="header-title">Stats ASF-1158</h3>
+        </header>
+
+Graph 1
+        <div class="row">
+            <h3>Commands executed per time slot</h3>
+
+            <div class="control visible">
+                <div class="input-group col-xs-12">
+                    <select
+                        class="select"
+                        ng-model="granularity"
+                        ng-options="value for value in items"></select>
+                </div>
+
+                <div class="input-group col-xs-12">
+                    <label>From:</label>
+                    <input
+                        type="text"
+                        ng-model="start"
+                        value='2015-12-14'
+                        class="start datepicker">
+
+                    <label>To:</label>
+                    <input
+                        type="text"
+                        ng-model="end"
+                        value=[[end]]
+                        class="end datepicker">
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="input-group">
+                        <label>
+                            <input ng-model="avg" type="checkbox"/><span class="label-text">Add Average Execution Time</span>
+                        </label>
+                        <br>
+                        <label>
+                            <input ng-model="max" type="checkbox"/><span class="label-text">Add Maximum Execution Time</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by user name:</label>
+                        <input type="text" class="select" ng-model="searchUser">
+                        <select
+                            class="select"
+                            ng-model="selectedUser"
+                            ng-options="user for user in users | filter:searchUser">
+                            <option value="">All users</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by device name:</label>
+                        <input type="text" class="select" ng-model="searchDevice">
+                        <select
+                            class="select"
+                            ng-model="selectedDevice"
+                            ng-options="device.device_name for device in devices | filter:searchDevice">
+                            <option value="">All devices</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by event type:</label>
+                        <input type="text" class="select" ng-model="searchEvent">
+                        <select
+                            class="select"
+                            ng-model="selectedEvent"
+                            ng-options="event.operation_name for event in events | filter:searchEvent">
+                            <option value="">All events</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by result code:</label>
+                        <input type="text" class="select" ng-model="searchCode">
+                        <select
+                            class="select"
+                            ng-model="selectedCode"
+                            ng-options="code for code in codes | filter:searchCode">
+                            <option value="">All result codes</option>
+                        </select>
+                    </div>
+                </div>
+                <a ng-click="loadGraph($event, 1, 'container-1')" class="btn btn-default btn-block load col-xs-12">Load Graph</a>
+            </div>
+
+            <div class="invisible">
+                <div id="container-1" class="graph"></div>
+                <a ng-click="goBack($event)" class="btn btn-default btn-block load col-xs-12">Back</a>
+            </div>
+        </div>
+
+
+
+Graph 2
+
+
+        <div class="row">
+            <h3>Commands executed per user/user group</h3>
+            <div class="control visible">
+                <div class="input-group col-xs-12">
+                    <select
+                        class="select"
+                        ng-model="granularity"
+                        ng-options="value for value in items"></select>
+                </div>
+
+
+                <div class="input-group col-xs-12">
+                    <label>From:</label>
+                    <input
+                        type="text"
+                        ng-model="start"
+                        value='2015-12-14'
+                        class="start datepicker">
+
+                    <label>To:</label>
+                    <input
+                        type="text"
+                        ng-model="end"
+                        value=[[end]]
+                        class="end datepicker">
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by user name:</label>
+                        <input type="text" class="select" ng-model="searchUser">
+                        <select
+                            class="select"
+                            ng-model="selectedUser"
+                            ng-options="user for user in users | filter:searchUser">
+                            <option value="">All users</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by device name:</label>
+                        <input type="text" class="select" ng-model="searchDevice">
+                        <select
+                            class="select"
+                            ng-model="selectedDevice"
+                            ng-options="device.device_name for device in devices | filter:searchDevice">
+                            <option value="">All devices</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by event type:</label>
+                        <input type="text" class="select" ng-model="searchEvent">
+                        <select
+                            class="select"
+                            ng-model="selectedEvent"
+                            ng-options="event.operation_name for event in events | filter:searchEvent">
+                            <option value="">All events</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by result code:</label>
+                        <input type="text" class="select" ng-model="searchCode">
+                        <select
+                            class="select"
+                            ng-model="selectedCode"
+                            ng-options="code for code in codes | filter:searchCode">
+                            <option value="">All result codes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <a
+                    ng-click="loadGraph($event, 2, 'container-2')"
+                    class="btn btn-default btn-block load col-xs-12">Load Graph</a>
+
+
+            </div>
+            <div class="invisible">
+                <div id="container-2" class="graph"></div>
+                <a
+                    ng-click="goBack($event)"
+                    class="btn btn-default btn-block load col-xs-12">Back</a>
+            </div>
+        </div>
+
+
+
+ Graph 3
+
+
+        <div class="row">
+            <h3>Commands executed per device/device geographical group/device type</h3>
+            <div class="visible control">
+                <div class="input-group col-xs-12">
+                    <select
+                        class="select"
+                        ng-model="granularity"
+                        ng-options="value for value in items"></select>
+                </div>
+
+
+                <div class="input-group col-xs-12">
+                    <label>From:</label>
+                    <input
+                        type="text"
+                        ng-model="start"
+                        value='2015-12-14'
+                        class="start datepicker">
+
+                    <label>To:</label>
+                    <input
+                        type="text"
+                        ng-model="end"
+                        value=[[end]]
+                        class="end datepicker">
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by user name:</label>
+                        <input type="text" class="select" ng-model="searchUser">
+                        <select
+                            class="select"
+                            ng-model="selectedUser"
+                            ng-options="user for user in users | filter:searchUser">
+                            <option value="">All users</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by device name:</label>
+                        <input type="text" class="select" ng-model="searchDevice">
+                        <select
+                            class="select"
+                            ng-model="selectedDevice"
+                            ng-options="device.device_name for device in devices | filter:searchDevice">
+                            <option value="">All devices</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by event type:</label>
+                        <input type="text" class="select" ng-model="searchEvent">
+                        <select
+                            class="select"
+                            ng-model="selectedEvent"
+                            ng-options="event.operation_name for event in events | filter:searchEvent">
+                            <option value="">All events</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-xs-3">
+                    <div class="input-group">
+                        <label>Filter by result code:</label>
+                        <input type="text" class="select" ng-model="searchCode">
+                        <select
+                            class="select"
+                            ng-model="selectedCode"
+                            ng-options="code for code in codes | filter:searchCode">
+                            <option value="">All result codes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <a
+                    ng-click="loadGraph($event, 3, 'container-3')"
+                    class="btn btn-default btn-block load col-xs-12">Load Graph</a>
+            </div>
+            <div class="invisible">
+                <div id="container-3" class="graph"></div>
+                <a
+                    ng-click="goBack($event)"
+                    class="btn btn-default btn-block load col-xs-12">Back</a>
+            </div>
+        </div>
+
+
+Configuration report
+
+        <div class="row">
+            <h3>Configuration report</h3>
+            <div class="col-md-12">
+                <button ng-click="loadReport()" ng-disabled="isDisabled" class="btn btn-default btn-block load" id="load-report">Load configuration report</button>
+            </div>
+            <div class="col-md-12">
+                <table class="table" id="report-table">
+                    <tr ng-repeat="object in objects">
+                        <td>[[object.object_name]]</td>
+                        <td>[[object.enabled]]</td>
+                        <td>[[object.disabled]]</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+
+<!-- TEST -->
+
+        <div class="container">
+            <h2>1) Click to load list of graphs</h2>
+            <button ng-click="loadGraphList()" class="btn btn-default btn-block load">Load graph list</button>
+
+            <h2>2) Select graph</h2>
+            <ul style="margin: 20px">
+                <li ng-repeat="graph in list">
+                    <button class="btn btn-default load" ng-click="getThisGraphData([[graph]])">[[graph.title]]</button>
+                </li>
+            </ul>
+
+            <hr>
+
+            <div class="raw">
+                <h3 ng-model="title">[[title]]</h3>
+                <h4 ng-model="description">[[description]]</h4>
+
+                <div class="input-group" ng-show="avg_max">
+                    <label>
+                        <input ng-model="avg" type="checkbox"/><span class="label-text">Add Average Execution Time</span>
+                    </label>
+                    <br>
+                    <label>
+                        <input ng-model="max" type="checkbox"/><span class="label-text">Add Maximum Execution Time</span>
+                    </label>
+                </div>
+
+                <div class="input-group col-xs-12">
+                    <select
+                        class="select"
+                        ng-model="granularityTest"
+                        ng-show="granularityTest"
+                        ng-options="value for value in granularityOptions"></select>
+                </div>
+
+                <div class="input-group col-xs-12" ng-show="startTime">
+                    <label>From:</label>
+                    <input
+                        type="text"
+                        ng-model="start"
+                        value='2015-12-14'
+                        class="start datepicker">
+
+                    <label>To:</label>
+                    <input
+                        type="text"
+                        ng-model="end"
+                        value=[[end]]
+                        class="end datepicker">
+                </div>
+
+
+                <!-- <div class="row">
+                    <p class="col-xs-3" ng-show="userTest">Filter by user name:</p>
+                    <p class="col-xs-3" ng-show="deviceTest">Filter by device name:</p>
+                    <p class="col-xs-3" ng-show="eventTest">Filter by event type:</p>
+                    <p class="col-xs-3" ng-show="resultTest">Filter by result code:</p>
+                </div>
+                <div class="row">
+                    <loader from="user_names" direct-upload="getFilteredUser(data)" class="col-xs-3" ng-show="userTest"></loader>
+                    <loader from="device_names" direct-upload="getFilteredData(data)" class="col-xs-3" ng-show="deviceTest"></loader>
+                    <loader from="event_types" direct-upload="getFilteredData(data)" class="col-xs-3" ng-show="eventTest"></loader>
+                    <loader from="result_codes" direct-upload="getFilteredData(data)" class="col-xs-3" ng-show="resultTest"></loader>
+                </div>
+
+                <div class="row">
+                    <select class="loader col-xs-3" ng-model="selectedItem" ng-options="item for item in filteredItem"></select>
+                    <select class="loader col-xs-3" ng-model="selectedItem" ng-options="item for item in filteredItem"></select>
+                    <select class="loader col-xs-3" ng-model="selectedItem" ng-options="item for item in filteredItem"></select>
+                    <select class="loader col-xs-3" ng-model="selectedItem" ng-options="item for item in filteredItem"></select>
+                </div>
+ -->
+            </div>
+            <h2>3) Click to load graph</h2>
+            <a ng-click="loadGraph('container')" class="btn btn-default btn-block load col-xs-12">Load Graph</a>
+
+        </div>
+
+        <div class="container">
+            <div class="graph" id="container"></div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="{% static 'js/stats/vendor/jquery-1.11.3.min.js' %}"></script>
+
+    <!-- Bootstrap -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+
+    <!-- Angular -->
+    <script src="{% static 'js/stats/vendor/angular.min.js' %}"></script>
+    <script src="{% static 'js/stats/app.js' %}"></script>
+    <script src="{% static 'js/stats/controllers/HomeCtrl.js' %}"></script>
+    <script src="{% static 'js/stats/services/DataService.js' %}"></script>
+    <script src="{% static 'js/stats/services/ChartService.js' %}"></script>
+    <script src="{% static 'js/stats/services/ReportService.js' %}"></script>
+    <script src="{% static 'js/stats/directives/directives.js' %}"></script>
+
+
+    <!-- Datepicker -->
+    <script src="{% static 'js/stats/vendor/bootstrap-datepicker.js' %}"></script>
+
+    <!-- AmCharts -->
+    <script src="{% static 'js/stats/vendor/amcharts/amcharts.js' %}"></script>
+    <script src="{% static 'js/stats/vendor/amcharts/serial.js' %}"></script>
+    <script src="{% static 'js/stats/vendor/amcharts/plugins/export/export.js' %}"></script>
+    <script src="{% static 'js/stats/vendor/amcharts/plugins/export/examples/export.config.default.js' %}"></script>
+    <script src="{% static 'js/stats/vendor/amcharts/dark.js' %}"></script>
+    <script src="{% static 'js/stats/vendor/amcharts/dark.js' %}"></script>
+
+
+</body>
+</html>

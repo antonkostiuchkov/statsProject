@@ -1,64 +1,70 @@
-from django.db import connection
 from django.http import HttpResponse
-import json
-import collections
 from django.shortcuts import render
+import json
 
+
+from views_functions.stats_list import stats_list_func
+from views_functions.stats_config import stats_config_func
+from views_functions.query_names import query_names_func
+from views_functions.report_data import report_data_func
+from views_functions.data_query import data_query_func
+from views_functions.filters import filter_func
+
+
+# Rendering stuff
 def index(request):
     template = 'index.html'
-    context = { }
-    return render(request, template, context)
+
+    return render(request, template)
 
 
-def query(request, interval, limit):
-    if interval is None:
-        return HttpResponseBadRequest()
-    cursor = connection.cursor()
-    cursor.execute("""
-        -- JOININNG ALL Data in One table
+# Querying data to show on graphs
+def data_query(request):
 
-        SELECT
-            date_trunc('""" + interval + """', TL.timestamp) AS date_aggr,
-            TL.user_name,
-            TLAC.lac_name AS operation_name,
-            DN.name AS device_name,
-            TL.exec_time
-        FROM
-            trans_log AS TL
-            INNER JOIN trans_log_action_codes AS TLAC
-                ON TL.action_code = TLAC.lac_id
-            LEFT OUTER JOIN device_names AS DN
-                ON TL.primary_device = DN.id
+    response = data_query_func(request)
+    response_json = json.dumps(response)
+
+    return HttpResponse(response_json)
 
 
-        WHERE
-            timestamp > CURRENT_DATE - INTERVAL '""" + limit + """' day
-            AND
-                user_name != ''
-            AND
-                user_name != 'road'
-            AND
-                user_name != 'root'
-            AND
-                DN.name != ''
-        ORDER BY
-            date_aggr desc
+# Getting data for report
+def report_data(request):
+
+    response = report_data_func()
+    response_json = json.dumps(response)
+
+    return HttpResponse(response_json)
 
 
-    """)
-    rows = cursor.fetchall()
+# Preloading data for filtering
+def query_names(request):
+
+    response = query_names_func()
+    response_json = json.dumps(response)
+
+    return HttpResponse(response_json)
 
 
-    obj_list = []
+# Generating list of stats on the load
+def stats_list(request):
 
-    for date_aggr, user_name, operation_name, device_name, exec_time in rows:
-        d = collections.OrderedDict()
-        d['date_aggr'] = str(date_aggr)
-        d['user_name'] = user_name
-        d['operation_name'] = operation_name
-        d['device_name'] = device_name
-        d['exec_time'] = exec_time
-        obj_list.append(d)
+    response = stats_list_func()
+    response_json = json.dumps(response)
 
-    response = HttpResponse(json.dumps(obj_list))
-    return response
+    return HttpResponse(response_json)
+
+# Generating configuration json for stats
+def stats_config(request, id):
+
+    response = stats_config_func(id)
+    response_json = json.dumps(response)
+
+    return HttpResponse(response_json)
+
+# Generating configuration json for stats
+def filter(request, table, keycode):
+
+    response = filter_func(table, keycode)
+    response_json = json.dumps(response)
+
+    return HttpResponse(response_json)

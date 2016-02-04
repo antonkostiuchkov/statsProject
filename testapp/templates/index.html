@@ -1,164 +1,165 @@
 {% load staticfiles %}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="Stats">
 <head>
     <meta charset="UTF-8">
-    <title>My DB Test</title>
+    <title>ASF-1158</title>
 
     <!-- Normalize -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/3.0.3/normalize.min.css">
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <!-- CSS -->
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/stats/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/stats/datepicker.css' %}">
+    <link  rel="stylesheet" href="{% static 'js/stats/vendor/amcharts/plugins/export/export.css' %}">
 
 </head>
-<body>
-    <header class="container">
-        <div class="row">
-            <h1 class="header-title">Stats ASF-1158</h1>
-        </div>
-    </header>
+<body ng-controller="homeCtrl">
+
+  <div ng-init="loadGraphList()">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4">
-                <select id="time-span" class="select">
-                    <option value="" disabled selected>Select time span</option>
-                    <option value="minute">Minute</option>
-                    <option value="hour">Hour</option>
-                    <option value="day">Day</option>
-                    <option value="week">Week</option>
-                    <option value="month">Month</option>
-                    <option value="quarter">Quarter</option>
-                    <option value="year">Year</option>
-                </select>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group">
-                    <input type="text" id="last-days" />
-                    <label>Last days</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <a href="#" class="btn btn-default btn-block load">Load Graphs</a>
-            </div>
+      <div class="outer-wrapper row">
+        <div class="wrapper" open>
+          <header>
+            <button type="button" class="btn btn-lg menu-toggle" ng-click="openSettings($event)">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <h2 class="graph-title">[[graph_1.title]]</h2>
+            <nav class="main-navigation">
+              <ul>
+                <li>
+                  <div role="group" class="btn-group">
+                    <button type="button" data-toggle="dropdown" class="btn btn-block dropdown-toggle">Day<span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <li>Hour</li>
+                      <li>Week</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div class="input-group"><span class="input-group-addon">From: </span>
+                    <input type="text" placeholder="Username" class="form-control"/>
+                  </div>
+                </li>
+                <li>
+                  <div class="input-group"><span class="input-group-addon">To: </span>
+                    <input type="text" placeholder="Username" class="form-control"/>
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox"/><span>Average Execution Time</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox"/><span>Maximum Execution Time</span>
+                  </label>
+                </li>
+                <li>
+                  <button type="button" class="btn btn-lg btn-block" ng-click="openSettings($event)">Load</button>
+                </li>
+              </ul>
+            </nav>
+          </header>
+          <main>
+            <h4 class="graph-descr">[[graph_1.description]]</h4>
+            <div id="graph-container-1" ng-init="loadGraph(1, 'graph-container-1')"></div>
+          </main>
         </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- div class="container">
+
+    <div ng-init="loadGraphList()">
+
+      <div class="outer-wrapper row" ng-repeat="graph in graphs">
+        <div class="wrapper" open>
+          <header>
+            <button type="button" class="btn btn-lg menu-toggle" ng-click="openSettings($event)">
+              <span class="glyphicon glyphicon-cog"></span>
+            </button>
+            <h2 class="graph-title">[[graph.title]]</h2>
+            <nav class="main-navigation">
+              <ul>
+                <li>
+                  <div role="group" class="btn-group">
+                    <button type="button" data-toggle="dropdown" class="btn btn-block dropdown-toggle">Day<span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                      <li>Hour</li>
+                      <li>Week</li>
+                    </ul>
+                  </div>
+                </li>
+                <li>
+                  <div class="input-group"><span class="input-group-addon">From: </span>
+                    <input type="text" placeholder="Username" class="form-control"/>
+                  </div>
+                </li>
+                <li>
+                  <div class="input-group"><span class="input-group-addon">To: </span>
+                    <input type="text" placeholder="Username" class="form-control"/>
+                  </div>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox"/><span>Average Execution Time</span>
+                  </label>
+                </li>
+                <li>
+                  <label>
+                    <input type="checkbox"/><span>Maximum Execution Time</span>
+                  </label>
+                </li>
+                <li>
+                  <button type="button" class="btn btn-lg btn-block" ng-click="openSettings($event)">Load</button>
+                </li>
+              </ul>
+            </nav>
+          </header>
+          <main>
+            <h4 class="graph-descr">[[graph.description]]</h4>
+            <div id="graph-container-[[graph.id]]" ng-init="loadGraph(graph.id, 'graph-container-' + graph.id)"></div>
+          </main>
+        </div>
+      </div>
+
     </div>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div id="container-1" class="graph"></div>
-            </div>
-        </div>
-    </div>
+  </div> -->
 
-    <!-- <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div id="container-2" class="graph"></div>
-                <div class="loader">
-                    <div class="content">
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <h1 class="loader-text">Loading...</h1>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div id="container-3" class="graph"></div>
-                <div class="loader">
-                    <div class="content">
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <h1 class="loader-text">Loading...</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div id="container-4" class="graph"></div>
-            </div>
-        </div>
-    </div>
+  <!-- JS -->
+  <script src="{% static 'js/stats/vendor/jquery-1.11.3.min.js' %}"></script>
 
-    <!-- <div class="container">
-        <div class="row">
-            <div class="col-md-6">
-                <div id="container-5" class="graph"></div>
-                <div class="loader">
-                    <div class="content">
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <h1 class="loader-text">Loading...</h1>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div id="container-6" class="graph"></div>
-                <div class="loader">
-                    <div class="content">
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <div class="stick"></div>
-                        <h1 class="loader-text">Loading...</h1>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
+  <!-- Bootstrap -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div id="container-7" class="graph"></div>
-            </div>
-        </div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div id="container-8" class="graph"></div>
-            </div>
-        </div>
-    </div>
+  <!-- Angular -->
+  <script src="{% static 'js/stats/vendor/angular.min.js' %}"></script>
+  <script src="{% static 'js/stats/app.js' %}"></script>
+  <script src="{% static 'js/stats/controllers/HomeCtrl.js' %}"></script>
+  <script src="{% static 'js/stats/services/DataService.js' %}"></script>
+  <script src="{% static 'js/stats/services/ChartService.js' %}"></script>
+  <script src="{% static 'js/stats/services/ReportService.js' %}"></script>
+  <script src="{% static 'js/stats/directives/directives.js' %}"></script>
 
-    <!-- JS -->
-    <script src="{% static 'js/vendor/jquery-1.11.3.min.js' %}"></script>
-    <script src="{% static 'js/app.js' %}"></script>
-    <!-- Bootstrap -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
-    <!-- Highcharts -->
-    <!--<script src="https://code.highcharts.com/highcharts.js"></script>-->
-    <script src="https://code.highcharts.com/stock/highstock.js"></script>
-    <script src="https://code.highcharts.com/modules/exporting.js"></script>
-    <script src="https://code.highcharts.com/modules/data.js"></script>
-    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
-    <script src="{% static 'js/vendor/dark-theme.js' %}"></script>
-    <!-- taffy.js -->
-    <script src="{% static 'js/vendor/taffy-min.js' %}"></script>
-    <script src="{% static 'js/vendor/taffy.extend.js' %}"></script>
+
+  <!-- Datepicker -->
+  <script src="{% static 'js/stats/vendor/bootstrap-datepicker.js' %}"></script>
+
+  <!-- AmCharts -->
+  <script src="{% static 'js/stats/vendor/amcharts/amcharts.js' %}"></script>
+  <script src="{% static 'js/stats/vendor/amcharts/serial.js' %}"></script>
+  <script src="{% static 'js/stats/vendor/amcharts/plugins/export/export.js' %}"></script>
+  <script src="{% static 'js/stats/vendor/amcharts/plugins/export/examples/export.config.default.js' %}"></script>
+  <script src="{% static 'js/stats/vendor/amcharts/dark.js' %}"></script>
+  <script src="{% static 'js/stats/vendor/amcharts/dark.js' %}"></script>
 
 
 </body>

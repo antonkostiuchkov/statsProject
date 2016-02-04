@@ -1,0 +1,97 @@
+.container {
+  margin: 50px auto;
+}
+.row {
+  margin-bottom: 20px;
+}
+header {
+  background: #333;
+  color: #fff;
+  padding: 20px;
+  position: relative;
+}
+.graph-title {
+  display: inline-block;
+}
+.graph-descr {
+  text-align: center;
+}
+.nav-toggle {
+  position: absolute;
+  top: 30px;
+  cursor: pointer;
+}
+a {
+  color: #fff;
+  text-decoration: none;
+}
+nav li {
+  list-style: none;
+}
+.main-navigation {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  text-align: center;
+  -webkit-transform: translateX(-100%);
+          transform: translateX(-100%);
+}
+.main-navigation .nav-toggle {
+  position: relative;
+}
+.main-navigation ul {
+  margin: 0;
+  padding: 20px;
+}
+.main-navigation ul li {
+  padding: 10px 20px;
+}
+.main-navigation ul li:hover {
+  background: #3d3d3d;
+}
+.wrapper {
+  -webkit-transform: translateX(0);
+          transform: translateX(0);
+  -webkit-transition: all 400ms ease-in-out;
+  transition: all 400ms ease-in-out;
+}
+.wrapper.open {
+  -webkit-transform: translateX(100%);
+          transform: translateX(100%);
+}
+.outer-wrapper {
+  overflow: hidden;
+}
+div[id^="graph-container-"] {
+    height: 500px;
+}
+.form-control {
+  background: transparent;
+  width: auto;
+  margin: 0 auto;
+}
+.input-group-addon {
+  background: transparent;
+  color: #fff;
+}
+button,
+.btn {
+  background-color: transparent;
+  border: 1px solid #ccc;
+  color: #fff;
+}
+.menu-toggle {
+  position: relative;
+  border: none;
+  top: -5px;
+}
+
+
+/*
+
+.button.active {
+  color: yellow;
+}*/
